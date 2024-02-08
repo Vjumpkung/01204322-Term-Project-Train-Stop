@@ -74,7 +74,7 @@ main_hardware
 - อย่าแก้ไขไฟล์อะไรบน folder main_hardware นะ
 - หากต้องการเขียน code ในเครื่องตัวเอง ให้ copy ทั้ง folder main_hardware มาทั้งหมด ใส่ไปที่ Hardware และ เปลี่ยนชื่อ folder ด้วยนะ
 - ไฟล์ config อย่าแก้ไขค่าต่างๆในคอมตัวเอง แล้ว push ขึ้น github นะ (ระวังรหัส wifi หลุด)
-- อย่าตั้งชื่อ file ซ้ำกันนะ
+- อย่าตั้งชื่อ file ใน folder hardware ทีทำงานซ้ำกันนะ (ตอน `sys.path.append` มันจะทับกันเอง)
     
 ## การจัดการ repo นี้
 
