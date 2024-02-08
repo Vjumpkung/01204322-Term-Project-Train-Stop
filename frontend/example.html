@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>หยุดก่อน รถไฟมาแล้ว</title>
+  <script src="https://unpkg.com/mqtt@5.3.5/dist/mqtt.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous">
+  </script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+  <style>
+    html,
+    body {
+      height: 100vh
+    }
+  </style>
+</head>
+
+<body>
+  <div class="h-100 d-flex flex-column align-items-center justify-content-center">
+    <div class="row">
+      <h1 class="text-center">Ultrasonic Sensor Distance</h1>
+    </div>
+    <div class="row">
+      <p id="ultrasonic" class="text-center fs-4">0 cm</p>
+    </div>
+    <div class="row">
+      <h1 class="text-center">Servo Status</h1>
+    </div>
+    <div class="row">
+      <p id="servo" class="text-center fs-4">OFF</p>
+    </div>
+  </div>
+  <script>
+    let client = mqtt.connect({
+      host: "localhost",
+      port: 9001
+    }) // create a client
+    client.on('connect', function () {
+      client.subscribe('ULTRASONIC/DISTANCE', function (err) {
+        if (!err) {
+          console.log('ULTRASONIC/DISTANCE subscribed')
+        }
+      })
+      client.subscribe('SERVO/STATUS', function (err) {
+        if (!err) {
+          console.log('SERVO/STATUS subscribed')
+        }
+      })
+    })
+
+    client.on('message', function (topic, message) {
+      if (topic === 'ULTRASONIC/DISTANCE') {
+        document.getElementById('ultrasonic').innerHTML = message.toString() + " cm";
+      }
+      if (topic === 'SERVO/STATUS') {
+        document.getElementById('servo').innerHTML = message.toString();
+      }
+    })
+  </script>
+</body>
+
+</html>
