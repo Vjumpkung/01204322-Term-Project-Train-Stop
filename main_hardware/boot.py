@@ -5,7 +5,7 @@ sys.path.append("config")
 sys.path.append("sensors")
 sys.path.append("mqtt")
 sys.path.append("network")
-sys.path.append("user_libs")  # file library from user
+sys.path.append("user_lib")  # file library from user
 
 from wifi_connect import do_connect
 from load_config import SSID, PASSWORD
