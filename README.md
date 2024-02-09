@@ -48,7 +48,7 @@ main_hardware
 │       servo_test.py
 │       ultrasonic.py
 │
-└─── sensors_libs
+└─── user_lib
         hcsr04.py
         servo.py
         ssd1306.py
@@ -85,5 +85,5 @@ main_hardware
 
 ## Known issues
 
-- ไฟล์ `boot.py` เมื่อ upload ลงไปยัง esp32 แล้ว อาจจะไม่สามารถเปิดแก้ไขจากบอร์ด esp32 ได้ (ต้องแก้ไฟล์ในเครื่องแล้ว upload ทับลงไป)
-- เนื่องจาก micropython ไม่สามารถ import ผ่าน folder/directory ได้จึงต้องใช้ `sys.path.append` ในการเพิ่ม directory ต่างๆ เข้าไปแทน และการ import module ต่างๆ จึงเหมือนกับว่าทุกๆไฟล์อยู่ folder/directory เดียวกัน 
+- [x] ~~ไฟล์ `boot.py` เมื่อ upload ลงไปยัง esp32 แล้ว อาจจะไม่สามารถเปิดแก้ไขจากบอร์ด esp32 ได้ (ต้องแก้ไฟล์ในเครื่องแล้ว upload ทับลงไป)~~ (แก้ได้แล้ว ใช้ Thonny 4.1 ขึ้นไป)
+- [ ] เนื่องจาก micropython ไม่สามารถ import ผ่าน folder/directory ได้จึงต้องใช้ `sys.path.append` ในการเพิ่ม directory ต่างๆ เข้าไปแทน และการ import module ต่างๆ จึงเหมือนกับว่าทุกๆไฟล์อยู่ folder/directory เดียวกัน 
