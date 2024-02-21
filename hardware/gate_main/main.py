@@ -2,12 +2,11 @@ import machine
 import mqtt_setup as mqtt
 from time import sleep
 from servo import Servo
-from load_config import MQTT_BROKER, PORT
 
 TOPIC_GATE = "crossing1/gates/north"
 GATE_OPEN_COMMAND = "1"
 GATE_CLOSE_COMMAND = "0"
-GATE_OPEN_STATUS = 180
+GATE_OPEN_STATUS = 90
 GATE_CLOSE_STATUS = 0
 gate_status = 0
 motor = Servo(pin=22)
@@ -21,15 +20,18 @@ motor.update_settings(
 )
 
 def func(topic, msg):
-    if topic == TOPIC_GATE:
-        if msg == GATE_OPEN_COMMAND:
+    global gate_status
+    msg2 = msg.decode()
+    if topic.decode() == TOPIC_GATE:
+        if msg2 == GATE_OPEN_COMMAND:
             gate_status = GATE_OPEN_STATUS
-        elif msg == GATE_CLOSE_COMMAND:
+        elif msg2 == GATE_CLOSE_COMMAND:
             gate_status = GATE_CLOSE_STATUS
+        else:
+            gate_status = 45
+        motor.move(gate_status)
         
-        moter.move(gate_status)
-        
-    print(topic,msg)
+    print(topic,msg2,gate_status)
 
 
 
@@ -48,6 +50,7 @@ def main():
     client.set_callback(func)
     client.subscribe(TOPIC_GATE)
     while(1):
+        #print("test")
         client.check_msg()
         sleep(0.5)
         
