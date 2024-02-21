@@ -46,7 +46,7 @@ def move_servo_test():
 def main():
     client = mqtt.setup()
     client.set_callback(func)
-    mqttClient.subscribe(TOPIC_GATE)
+    client.subscribe(TOPIC_GATE)
     while(1):
         mqttClient.check_msg()
         sleep(0.5)
