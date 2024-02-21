@@ -48,7 +48,7 @@ def main():
     client.set_callback(func)
     client.subscribe(TOPIC_GATE)
     while(1):
-        mqttClient.check_msg()
+        client.check_msg()
         sleep(0.5)
         
     
