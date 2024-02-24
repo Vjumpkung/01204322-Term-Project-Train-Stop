@@ -11,7 +11,7 @@ const trainclient = mqtt.connect(`ws://${MQTT_BROKER}:${PORT}`, {
   username: USERNAME,
   password: PASS,
   keepalive: 60000,
-  clientId: CROSSINGID,
+  clientId: CROSSINGID + "_frontend" + Math.random().toString(16),
 });
 
 trainclient.on("connect", () => {
