@@ -1,5 +1,7 @@
 # MQTT Topics
 
+**enable retain message for all topics**
+
 ## Lookouts
 
 continual report (period of 250 ms or less)
