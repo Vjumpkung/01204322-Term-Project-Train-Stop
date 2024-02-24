@@ -175,12 +175,12 @@ def main():
     print("main: done creating dfa")
 
     print("main: begin listening for msg...")
-    last_report = time.time()
+    last_scheduled_report = time.time()
     while True:
         mqtt_client.check_msg()
-        if time.time() - last_report > 1:
+        if time.time() - last_scheduled_report > 1:
             state_announcer.announce_state(dfa.current_state)
-            last_report = time.time()
+            last_scheduled_report = time.time()
         time.sleep(0.1)
 
 
