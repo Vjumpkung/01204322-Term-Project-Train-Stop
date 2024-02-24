@@ -3,14 +3,12 @@ import time
 from machine import reset
 from mqtt_setup import setup
 
+from gates import Gates
 from lookouts import Lookouts
-from dfa import DFA
-from gates_controller import GatesController
-from state_announcer import StateAnnouncer
+from control import Control
 
 
 CROSSING_ID = "crossing1"
-print(f"{CROSSING_ID}")
 
 LOOKOUT_WEST_FAR_TOPIC = f"{CROSSING_ID}/lookouts/west/far"
 LOOKOUT_WEST_NEAR_TOPIC = f"{CROSSING_ID}/lookouts/west/near"
@@ -22,18 +20,40 @@ STATE_TOPIC = f"{CROSSING_ID}/state"
 GATES_NORTH_TOPIC = f"{CROSSING_ID}/gates/north"
 GATES_SOUTH_TOPIC = f"{CROSSING_ID}/gates/south"
 
+MODE_TOPIC = f"{CROSSING_ID}/mode"
+
 STATES = {
+    # "0" => initial state
+    # "eb..." train is eastbound
+    # "wb..." train is westbound
     "0",
-    "eb0", "eb1", "eb2", "eb3", "eb4", "eb5",
-    "wb0", "wb1", "wb2", "wb3", "wb4", "wb5"
+    "eb0",
+    "eb1",
+    "eb2",
+    "eb3",
+    "eb4",
+    "eb5",
+    "wb0",
+    "wb1",
+    "wb2",
+    "wb3",
+    "wb4",
+    "wb5",
 }
 
-# "<west_far><west_near><east_near><east_far>"
 INPUTS = {
-    "0000", "0001", "0010", "0100", "1000",
-    "0011", "0110", "1100",
-    "0111", "1110",
-    "1111"
+    # "<west_far><west_near><east_near><east_far>"
+    "0000",
+    "0001",
+    "0010",
+    "0100",
+    "1000",
+    "0011",
+    "0110",
+    "1100",
+    "0111",
+    "1110",
+    "1111",
 }
 
 TRANSITIONS = {
@@ -55,7 +75,6 @@ TRANSITIONS = {
     ("wb4", "1000"): "wb5",  # open gates
     ("wb5", "0000"): "0",
     # ---------------------- #
-
     # eastbound #
     # ---------------------- #
     ("0", "1000"): "eb0",  # close gates
@@ -76,111 +95,91 @@ TRANSITIONS = {
     # ---------------------- #
 }
 
+
+# global variables used by sub_cb
+gates = None
 lookouts = None
-dfa = None
+control = None
+
 
 def sub_cb(topic, msg):
     topic = topic.decode()
     msg = msg.decode()
     print("sub_cb: received a msg: " + f"{topic}: {msg}")
     if topic == LOOKOUT_WEST_FAR_TOPIC:
-        if msg != "0" and msg != "1":
-            print("sub_cb: lookout status is invalid")
-            return
-        if lookouts.west_far == int(msg):
-            print("sub_cb: lookout status didn't change")
-            return
         lookouts.west_far = int(msg)
-        print(f"sub_cb: lookouts changed to {lookouts.to_str()}")
-        dfa.transition(lookouts.to_str())
+        control.transition(str(lookouts))
     elif topic == LOOKOUT_WEST_NEAR_TOPIC:
-        if msg != "0" and msg != "1":
-            print("sub_cb: lookout status is invalid")
-            return
-        if lookouts.west_near == int(msg):
-            print("sub_cb: lookout status didn't change")
-            return
         lookouts.west_near = int(msg)
-        print(f"sub_cb: lookouts changed to {lookouts.to_str()}")
-        dfa.transition(lookouts.to_str())
+        control.transition(str(lookouts))
     elif topic == LOOKOUT_EAST_NEAR_TOPIC:
-        if msg != "0" and msg != "1":
-            print("sub_cb: lookout status is invalid")
-            return
-        if lookouts.east_near == int(msg):
-            print("sub_cb: lookout status didn't change")
-            return
         lookouts.east_near = int(msg)
-        print(f"sub_cb: lookouts changed to {lookouts.to_str()}")
-        dfa.transition(lookouts.to_str())
+        control.transition(str(lookouts))
     elif topic == LOOKOUT_EAST_FAR_TOPIC:
-        if msg != "0" and msg != "1":
-            print("sub_cb: lookout status is invalid")
-            return
-        if lookouts.east_far == int(msg):
-            print("sub_cb: lookout status didn't change")
-            return
         lookouts.east_far = int(msg)
-        print(f"sub_cb: lookouts changed to {lookouts.to_str()}")
-        dfa.transition(lookouts.to_str())
+        control.transition(str(lookouts))
+    elif topic == MODE_TOPIC:
+        control.mode = msg
+    elif topic == GATES_NORTH_TOPIC:
+        gates.north = int(msg)
+    elif topic == GATES_SOUTH_TOPIC:
+        gates.south = int(msg)
     else:
-        print("sub_cb: topic didn't match")
+        print("sub_cb: no action for this topic")
+
 
 def main():
+    global gates
     global lookouts
-    global dfa
+    global control
 
     mqtt_client = setup()
-    print("main: done setting up mqtt_client")
     mqtt_client.set_callback(sub_cb)
-    print("main: done setting subscribe callback")
 
     mqtt_client.subscribe(LOOKOUT_WEST_FAR_TOPIC)
     mqtt_client.subscribe(LOOKOUT_WEST_NEAR_TOPIC)
     mqtt_client.subscribe(LOOKOUT_EAST_NEAR_TOPIC)
     mqtt_client.subscribe(LOOKOUT_EAST_FAR_TOPIC)
-    print("main: done subscribing to topics")
 
-    state_announcer = StateAnnouncer(mqtt_client, STATE_TOPIC)
-    print("main: done creating state_announcer")
-    gates_controller = GatesController(mqtt_client, GATES_NORTH_TOPIC, GATES_SOUTH_TOPIC)
-    print("main: done creating gates_controller")
+    mqtt_client.subscribe(GATES_NORTH_TOPIC)
+    mqtt_client.subscribe(GATES_SOUTH_TOPIC)
+
+    mqtt_client.subscribe(MODE_TOPIC)
+
+    gates = Gates(mqtt_client, GATES_NORTH_TOPIC, GATES_SOUTH_TOPIC)
 
     state_actions = {
-        "wb0": [
-            (gates_controller.set_status, {"status": "close"})
-        ],
-        "eb0": [
-            (gates_controller.set_status, {"status": "close"})
-        ],
-        "wb2": [
-            (gates_controller.set_status, {"status": "open"})
-        ],
-        "wb5": [
-            (gates_controller.set_status, {"status": "open"})
-        ],
-        "eb2": [
-            (gates_controller.set_status, {"status": "open"})
-        ],
-        "eb5": [
-            (gates_controller.set_status, {"status": "open"})
-        ],
+        # "state": [(<respect_mode>, <function>, <kwargs>), ...]
+        # if <respect_mode> is True, then the function will only be called if the mode is "A" (automatic)
+        # if <respect_mode> is False, then the function will be called regardless of the mode
+        "wb0": [(True, gates.close_all, {})],
+        "eb0": [(True, gates.close_all, {})],
+        "wb2": [(True, gates.open_all, {})],
+        "wb5": [(True, gates.open_all, {})],
+        "eb2": [(True, gates.open_all, {})],
+        "eb5": [(True, gates.open_all, {})],
     }
-    print("main: done creating state_actions")
 
     lookouts = Lookouts()
-    print("main: done creating lookouts")
 
-    dfa = DFA(STATES, INPUTS, TRANSITIONS, state_announcer.announce_state, state_actions, "0")
-    print("main: done creating dfa")
+    control = Control(
+        states=STATES,
+        inputs=INPUTS,
+        transitions=TRANSITIONS,
+        state_actions=state_actions,
+        initial_state="0",
+        mqtt_client=mqtt_client,
+        state_topic=STATE_TOPIC,
+        mode_topic=MODE_TOPIC,
+    )
 
     print("main: begin listening for msg...")
-    last_scheduled_state_report = time.time()
+    last_ping = time.time()
     while True:
         mqtt_client.check_msg()
-        if time.time() - last_scheduled_state_report > 1:
-            state_announcer.announce_state(dfa.current_state)
-            last_scheduled_state_report = time.time()
+        if time.time() - last_ping > 60:
+            mqtt_client.ping()
+            last_ping = time.time()
         time.sleep(0.1)
 
 
