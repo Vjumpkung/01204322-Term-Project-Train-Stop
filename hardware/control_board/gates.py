@@ -16,13 +16,10 @@ class Gates:
     def north(self, status):
         status = int(status)
         if status not in [0, 1]:
-            print("Gates.north.setter: status is invalid")
-            return
-        if self._north == status:
-            print("Gates.north.setter: no change in status")
+            print("Gates.north.setter: invalid status")
             return
         self._north = status
-        print(f"Gates.north.setter: status set to {self._north}")
+        print(f"Gates.north.setter: set status to {self._north}")
 
     @property
     def south(self):
@@ -32,13 +29,10 @@ class Gates:
     def south(self, status):
         status = int(status)
         if status not in [0, 1]:
-            print("Gates.south.setter: status is invalid")
-            return
-        if self._south == status:
-            print("Gates.south.setter: no change in status")
+            print("Gates.south.setter: invalid status")
             return
         self._south = status
-        print(f"Gates.south.setter: status set to {self._south}")
+        print(f"Gates.south.setter: set status to {self._south}")
 
     def _publish_north(self):
         self._mqtt_client.publish(

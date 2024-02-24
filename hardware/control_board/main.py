@@ -3,8 +3,8 @@ import time
 from machine import reset
 from mqtt_setup import setup
 
-from gates import Gates
 from lookouts import Lookouts
+from gates import Gates
 from control import Control
 
 
@@ -15,10 +15,10 @@ LOOKOUT_WEST_NEAR_TOPIC = f"{CROSSING_ID}/lookouts/west/near"
 LOOKOUT_EAST_NEAR_TOPIC = f"{CROSSING_ID}/lookouts/east/near"
 LOOKOUT_EAST_FAR_TOPIC = f"{CROSSING_ID}/lookouts/east/far"
 
-STATE_TOPIC = f"{CROSSING_ID}/state"
-
 GATES_NORTH_TOPIC = f"{CROSSING_ID}/gates/north"
 GATES_SOUTH_TOPIC = f"{CROSSING_ID}/gates/south"
+
+STATE_TOPIC = f"{CROSSING_ID}/state"
 
 MODE_TOPIC = f"{CROSSING_ID}/mode"
 
@@ -96,9 +96,9 @@ TRANSITIONS = {
 }
 
 
-# global variables used by sub_cb
-gates = None
+# global variables used by operations in sub_cb
 lookouts = None
+gates = None
 control = None
 
 
@@ -106,6 +106,8 @@ def sub_cb(topic, msg):
     topic = topic.decode()
     msg = msg.decode()
     print("sub_cb: received a msg: " + f"{topic}: {msg}")
+    # do not do anything that publishes back to the same topic
+    # otherwise, this will cause an infinite loop of msg exchanges
     if topic == LOOKOUT_WEST_FAR_TOPIC:
         lookouts.west_far = int(msg)
         control.transition(str(lookouts))
@@ -125,26 +127,23 @@ def sub_cb(topic, msg):
     elif topic == GATES_SOUTH_TOPIC:
         gates.south = int(msg)
     else:
-        print("sub_cb: no action for this topic")
+        print("sub_cb: no actions for this topic")
 
 
 def main():
-    global gates
     global lookouts
+    global gates
     global control
 
     mqtt_client = setup()
-    mqtt_client.set_callback(sub_cb)
 
-    mqtt_client.subscribe(LOOKOUT_WEST_FAR_TOPIC)
-    mqtt_client.subscribe(LOOKOUT_WEST_NEAR_TOPIC)
-    mqtt_client.subscribe(LOOKOUT_EAST_NEAR_TOPIC)
-    mqtt_client.subscribe(LOOKOUT_EAST_FAR_TOPIC)
-
-    mqtt_client.subscribe(GATES_NORTH_TOPIC)
-    mqtt_client.subscribe(GATES_SOUTH_TOPIC)
-
-    mqtt_client.subscribe(MODE_TOPIC)
+    lookouts = Lookouts(
+        mqtt_client,
+        LOOKOUT_WEST_FAR_TOPIC,
+        LOOKOUT_WEST_NEAR_TOPIC,
+        LOOKOUT_EAST_NEAR_TOPIC,
+        LOOKOUT_EAST_FAR_TOPIC,
+    )
 
     gates = Gates(mqtt_client, GATES_NORTH_TOPIC, GATES_SOUTH_TOPIC)
 
@@ -160,8 +159,6 @@ def main():
         "eb5": [(True, gates.open_all, {})],
     }
 
-    lookouts = Lookouts()
-
     control = Control(
         states=STATES,
         inputs=INPUTS,
@@ -173,11 +170,27 @@ def main():
         mode_topic=MODE_TOPIC,
     )
 
+    # do not subscribe to any topics until all the global variables needed by operations in sub_cb are set,
+    # otherwise operations on these global variables will raise a nonetype error when a msg is received
+
+    mqtt_client.set_callback(sub_cb)
+
+    mqtt_client.subscribe(LOOKOUT_WEST_FAR_TOPIC)
+    mqtt_client.subscribe(LOOKOUT_WEST_NEAR_TOPIC)
+    mqtt_client.subscribe(LOOKOUT_EAST_NEAR_TOPIC)
+    mqtt_client.subscribe(LOOKOUT_EAST_FAR_TOPIC)
+
+    mqtt_client.subscribe(GATES_NORTH_TOPIC)
+    mqtt_client.subscribe(GATES_SOUTH_TOPIC)
+
+    mqtt_client.subscribe(MODE_TOPIC)
+
     print("main: begin listening for msg...")
     last_ping = time.time()
     while True:
         mqtt_client.check_msg()
         if time.time() - last_ping > 60:
+            # ping the broker every 60 seconds to keep the connection alive
             mqtt_client.ping()
             last_ping = time.time()
         time.sleep(0.1)
