@@ -42,12 +42,12 @@ class Gates:
 
     def _publish_north(self):
         self._mqtt_client.publish(
-            self._gates_north_topic.encode(), str(self._north).encode()
+            self._gates_north_topic.encode(), str(self._north).encode(), retain=True
         )
 
     def _publish_south(self):
         self._mqtt_client.publish(
-            self._gates_south_topic.encode(), str(self._south).encode()
+            self._gates_south_topic.encode(), str(self._south).encode(), retain=True
         )
 
     def open_north(self):

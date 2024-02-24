@@ -41,11 +41,13 @@ class Control:
 
     def _publish_state(self):
         self._mqtt_client.publish(
-            self._state_topic.encode(), self._current_state.encode()
+            self._state_topic.encode(), self._current_state.encode(), retain=True
         )
 
     def _publish_mode(self):
-        self._mqtt_client.publish(self._mode_topic.encode(), self._mode.encode())
+        self._mqtt_client.publish(
+            self._mode_topic.encode(), self._mode.encode(), retain=True
+        )
 
     def use_auto_mode(self):
         self.mode = "A"
