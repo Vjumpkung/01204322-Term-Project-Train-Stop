@@ -33,6 +33,7 @@ class Control:
 
     @mode.setter
     def mode(self, mode):
+        mode = str(mode)
         if mode not in ["A", "M"]:
             print("Control.mode.setter: invalid mode")
             return
@@ -43,11 +44,13 @@ class Control:
         self._mqtt_client.publish(
             self._state_topic.encode(), self._current_state.encode(), retain=True
         )
+        print(f"Control._publish_state: published state {self._current_state}")
 
     def _publish_mode(self):
         self._mqtt_client.publish(
             self._mode_topic.encode(), self._mode.encode(), retain=True
         )
+        print(f"Control._publish_mode: published mode {self._mode}")
 
     def use_auto_mode(self):
         self.mode = "A"
@@ -60,6 +63,8 @@ class Control:
         print(f"Control.use_manual_mode: published and set mode to {self._mode}")
 
     def transition(self, _input):
+        _input = str(_input)
+
         if _input not in self._inputs:
             print("Control.transition: invalid input")
             return

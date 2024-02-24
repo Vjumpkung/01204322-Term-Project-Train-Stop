@@ -81,18 +81,22 @@ class Lookouts:
         self._mqtt_client.publish(
             self._west_far_topic.encode(), str(self._west_far).encode(), retain=True
         )
+        print(f"Lookouts._publish_west_far: published status {self._west_far}")
 
     def _publish_west_near(self):
         self._mqtt_client.publish(
             self._west_near_topic.encode(), str(self._west_near).encode(), retain=True
         )
+        print(f"Lookouts._publish_west_near: published status {self._west_near}")
 
     def _publish_east_near(self):
         self._mqtt_client.publish(
             self._east_near_topic.encode(), str(self._east_near).encode(), retain=True
         )
+        print(f"Lookouts._publish_east_near: published status {self._east_near}")
 
     def _publish_east_far(self):
         self._mqtt_client.publish(
             self._east_far_topic.encode(), str(self._east_far).encode(), retain=True
         )
+        print(f"Lookouts._publish_east_far: published status {self._east_far}")

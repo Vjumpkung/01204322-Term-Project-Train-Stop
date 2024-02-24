@@ -109,23 +109,71 @@ def sub_cb(topic, msg):
     # do not do anything that publishes back to the same topic
     # otherwise, this will cause an infinite loop of msg exchanges
     if topic == LOOKOUT_WEST_FAR_TOPIC:
-        lookouts.west_far = int(msg)
+        msg = int(msg)
+        if msg not in [0, 1]:
+            print("sub_cb: invalid received west_far lookout status")
+            return
+        if lookouts.west_far == msg:
+            print("sub_cb: no change in received west_far lookout status")
+            return
+        lookouts.west_far = msg
         control.transition(str(lookouts))
     elif topic == LOOKOUT_WEST_NEAR_TOPIC:
-        lookouts.west_near = int(msg)
+        msg = int(msg)
+        if msg not in [0, 1]:
+            print("sub_cb: invalid received west_near lookout status")
+            return
+        if lookouts.west_near == msg:
+            print("sub_cb: no change in received west_near lookout status")
+            return
+        lookouts.west_near = msg
         control.transition(str(lookouts))
     elif topic == LOOKOUT_EAST_NEAR_TOPIC:
-        lookouts.east_near = int(msg)
+        msg = int(msg)
+        if msg not in [0, 1]:
+            print("sub_cb: invalid received east_near lookout status")
+            return
+        if lookouts.east_near == msg:
+            print("sub_cb: no change in received east_near lookout status")
+            return
+        lookouts.east_near = msg
         control.transition(str(lookouts))
     elif topic == LOOKOUT_EAST_FAR_TOPIC:
-        lookouts.east_far = int(msg)
+        msg = int(msg)
+        if msg not in [0, 1]:
+            print("sub_cb: invalid received east_far lookout status")
+            return
+        if lookouts.east_far == msg:
+            print("sub_cb: no change in received east_far lookout status")
+            return
+        lookouts.east_far = msg
         control.transition(str(lookouts))
     elif topic == MODE_TOPIC:
+        if msg not in ["A", "M"]:
+            print("sub_cb: invalid mode")
+            return
+        if control.mode == msg:
+            print("sub_cb: no change in mode")
+            return
         control.mode = msg
     elif topic == GATES_NORTH_TOPIC:
-        gates.north = int(msg)
+        msg = int(msg)
+        if msg not in [0, 1]:
+            print("sub_cb: invalid received north gate status")
+            return
+        if gates.north == msg:
+            print("sub_cb: no change in received north gate status")
+            return
+        gates.north = msg
     elif topic == GATES_SOUTH_TOPIC:
-        gates.south = int(msg)
+        msg = int(msg)
+        if msg not in [0, 1]:
+            print("sub_cb: invalid received south gate status")
+            return
+        if gates.south == msg:
+            print("sub_cb: no change in received south gate status")
+            return
+        gates.south = msg
     else:
         print("sub_cb: no actions for this topic")
 

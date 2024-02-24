@@ -38,11 +38,13 @@ class Gates:
         self._mqtt_client.publish(
             self._gates_north_topic.encode(), str(self._north).encode(), retain=True
         )
+        print(f"Gates._publish_north: published status {self._north}")
 
     def _publish_south(self):
         self._mqtt_client.publish(
             self._gates_south_topic.encode(), str(self._south).encode(), retain=True
         )
+        print(f"Gates._publish_south: published status {self._south}")
 
     def open_north(self):
         self._north = 1
