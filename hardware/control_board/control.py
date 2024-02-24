@@ -20,6 +20,8 @@ class Control:
         self._mode_topic = mode_topic
         self._current_state = initial_state
         self._mode = "A"
+        self._publish_state()
+        self._publish_mode()
 
     @property
     def current_state(self):
