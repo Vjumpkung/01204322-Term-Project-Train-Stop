@@ -1,6 +1,5 @@
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
-import Switch from "@mui/material/Switch";
 import Grid from "@mui/material/Grid";
 import { useState } from "react";
 import { MqttClient } from "mqtt";
@@ -9,16 +8,11 @@ import Lookouts from "./components/lookouts";
 import State from "./components/state";
 import Gates from "./components/gates";
 import { Typography } from "@mui/material";
+import Mode from "./components/mode";
 
 function App() {
   const [client] = useState<MqttClient>(trainclient);
   const [isAuto, setIsAuto] = useState<boolean>(true);
-
-  client.on("message", function (topic, message) {
-    if (topic === "crossing1/mode") {
-      setIsAuto(message.toString() === "A");
-    }
-  });
 
   return (
     <Container maxWidth="lg" sx={{ flexGrow: 1 }}>
@@ -30,30 +24,7 @@ function App() {
             </Typography>
           </Box>
         </Grid>
-        <Grid item xs={12}>
-          <Box sx={{ marginTop: "1em" }}>
-            <Typography sx={{ fontWeight: "bold", fontSize: "1.5em" }}>
-              Mode
-            </Typography>
-          </Box>
-        </Grid>
-        <Grid item xs={12}>
-          <Box>
-            <Switch
-              checked={isAuto}
-              onChange={(event) => {
-                client.publish(
-                  "crossing1/mode",
-                  event.target.checked ? "A" : "M"
-                );
-              }}
-              size="medium"
-            />
-            <span style={{ fontWeight: "bold" }}>
-              {isAuto ? "Auto" : "Manual"}
-            </span>
-          </Box>
-        </Grid>
+        <Mode client={client} isAuto={isAuto} setIsAuto={setIsAuto} />
         <Grid item xs={12}>
           <Box>
             <Typography sx={{ fontWeight: "bold", fontSize: "1.5em" }}>
