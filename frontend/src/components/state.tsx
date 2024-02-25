@@ -1,10 +1,10 @@
-import { MqttClient } from "mqtt";
+import { Box } from "@mui/material";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
-import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
-import { Fragment, useState } from "react";
-import { Box } from "@mui/material";
+import Typography from "@mui/material/Typography";
+import { MqttClient } from "mqtt";
+import { useState } from "react";
 import { CROSSINGID } from "../utils/connect_mqtt";
 
 export default function State({ client }: { client: MqttClient }) {
@@ -17,7 +17,7 @@ export default function State({ client }: { client: MqttClient }) {
   });
 
   return (
-    <Fragment>
+    <>
       <Grid item xs={12}>
         <Box>
           <Typography sx={{ fontWeight: "bold", fontSize: "1.5em" }}>
@@ -38,6 +38,6 @@ export default function State({ client }: { client: MqttClient }) {
           </CardContent>
         </Card>
       </Grid>
-    </Fragment>
+    </>
   );
 }

@@ -1,11 +1,11 @@
-import { MqttClient } from "mqtt";
+import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
-import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
-import { Fragment, useState } from "react";
 import Switch from "@mui/material/Switch";
-import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import { MqttClient } from "mqtt";
+import { useState } from "react";
 import { CROSSINGID } from "../utils/connect_mqtt";
 
 export default function Gates({
@@ -28,7 +28,7 @@ export default function Gates({
   });
 
   return (
-    <Fragment>
+    <>
       <Grid item xs={12}>
         <Box>
           <Typography sx={{ fontWeight: "bold", fontSize: "1.5em" }}>
@@ -108,6 +108,6 @@ export default function Gates({
           </CardContent>
         </Card>
       </Grid>
-    </Fragment>
+    </>
   );
 }

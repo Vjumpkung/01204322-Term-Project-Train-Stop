@@ -3,7 +3,6 @@ import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Switch from "@mui/material/Switch";
 import { MqttClient } from "mqtt";
-import { Fragment } from "react";
 import { CROSSINGID } from "../utils/connect_mqtt";
 
 export default function Mode({
@@ -21,7 +20,7 @@ export default function Mode({
     }
   });
   return (
-    <Fragment>
+    <>
       <Grid item xs={12}>
         <Box sx={{ marginTop: "1em" }}>
           <Typography sx={{ fontWeight: "bold", fontSize: "1.75em" }}>
@@ -48,6 +47,6 @@ export default function Mode({
           </Box>
         </Grid>
       </Grid>
-    </Fragment>
+    </>
   );
 }
