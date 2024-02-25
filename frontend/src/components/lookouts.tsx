@@ -4,6 +4,7 @@ import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
 import { MqttClient } from "mqtt";
 import { useState } from "react";
+import { Box } from "@mui/material";
 
 export default function Lookouts({ client }: { client: MqttClient }) {
   const [westFar, setWestFar] = useState<boolean>(false);
@@ -28,6 +29,13 @@ export default function Lookouts({ client }: { client: MqttClient }) {
 
   return (
     <>
+      <Grid item xs={12}>
+        <Box>
+          <Typography sx={{ fontWeight: "bold", fontSize: "1.5em" }}>
+            Lookouts
+          </Typography>
+        </Box>
+      </Grid>
       <Grid item xs={12} sm={6} md={3}>
         <Card>
           <CardContent>

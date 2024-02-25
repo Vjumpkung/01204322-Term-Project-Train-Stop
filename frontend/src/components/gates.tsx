@@ -3,7 +3,7 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import Switch from "@mui/material/Switch";
 import Box from "@mui/material/Box";
 
@@ -27,7 +27,14 @@ export default function Gates({
   });
 
   return (
-    <>
+    <Fragment>
+      <Grid item xs={12}>
+        <Box>
+          <Typography sx={{ fontWeight: "bold", fontSize: "1.5em" }}>
+            Gates
+          </Typography>
+        </Box>
+      </Grid>
       <Grid item xs={12} sm={6} md={3}>
         <Card>
           <CardContent>
@@ -88,6 +95,6 @@ export default function Gates({
           </CardContent>
         </Card>
       </Grid>
-    </>
+    </Fragment>
   );
 }
