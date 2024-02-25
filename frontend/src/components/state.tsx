@@ -5,12 +5,13 @@ import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
 import { Fragment, useState } from "react";
 import { Box } from "@mui/material";
+import { CROSSINGID } from "../utils/connect_mqtt";
 
 export default function State({ client }: { client: MqttClient }) {
   const [state, setState] = useState<string>("0");
 
   client.on("message", function (topic, message) {
-    if (topic === "crossing1/state") {
+    if (topic === `${CROSSINGID}/state`) {
       setState(message.toString());
     }
   });

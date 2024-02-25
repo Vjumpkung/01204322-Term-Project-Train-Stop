@@ -6,6 +6,7 @@ import Grid from "@mui/material/Grid";
 import { Fragment, useState } from "react";
 import Switch from "@mui/material/Switch";
 import Box from "@mui/material/Box";
+import { CROSSINGID } from "../utils/connect_mqtt";
 
 export default function Gates({
   client,
@@ -18,10 +19,10 @@ export default function Gates({
   const [southGates, setSouthGates] = useState<boolean>(false);
 
   client.on("message", function (topic, message) {
-    if (topic === "crossing1/gates/north") {
+    if (topic === `${CROSSINGID}/gates/north`) {
       setNorthGates(message.toString() === "1");
     }
-    if (topic === "crossing1/gates/south") {
+    if (topic === `${CROSSINGID}/gates/south`) {
       setSouthGates(message.toString() === "1");
     }
   });
@@ -36,7 +37,13 @@ export default function Gates({
         </Box>
       </Grid>
       <Grid item xs={12} sm={6} md={3}>
-        <Card>
+        <Card
+          sx={
+            !isAuto
+              ? { backgroundColor: `${northGates ? "green" : "red"}` }
+              : null
+          }
+        >
           <CardContent>
             <Typography sx={{ fontSize: 30 }} color="text.primary" gutterBottom>
               North Gate
@@ -50,7 +57,7 @@ export default function Gates({
             <Box sx={{ textAlign: "right" }}>
               {isAuto ? null : (
                 <Switch
-                  color="secondary"
+                  color="primary"
                   checked={northGates}
                   onChange={(event) => {
                     client.publish(
@@ -66,7 +73,13 @@ export default function Gates({
         </Card>
       </Grid>
       <Grid item xs={12} sm={6} md={3}>
-        <Card>
+        <Card
+          sx={
+            !isAuto
+              ? { backgroundColor: `${southGates ? "green" : "red"}` }
+              : null
+          }
+        >
           <CardContent>
             <Typography sx={{ fontSize: 30 }} color="text.primary" gutterBottom>
               South Gate
@@ -80,7 +93,7 @@ export default function Gates({
             <Box sx={{ textAlign: "right" }}>
               {isAuto ? null : (
                 <Switch
-                  color="secondary"
+                  color="primary"
                   checked={southGates}
                   onChange={(event) => {
                     client.publish(

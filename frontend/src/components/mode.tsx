@@ -4,6 +4,7 @@ import Grid from "@mui/material/Grid";
 import Switch from "@mui/material/Switch";
 import { MqttClient } from "mqtt";
 import { Fragment } from "react";
+import { CROSSINGID } from "../utils/connect_mqtt";
 
 export default function Mode({
   client,
@@ -15,7 +16,7 @@ export default function Mode({
   setIsAuto: (isAuto: boolean) => void;
 }) {
   client.on("message", function (topic, message) {
-    if (topic === "crossing1/mode") {
+    if (topic === `${CROSSINGID}/mode`) {
       setIsAuto(message.toString() === "A");
     }
   });

@@ -4,7 +4,7 @@ const MQTT_BROKER = import.meta.env.VITE_MQTT_BROKER;
 const PORT = import.meta.env.VITE_PORT;
 const USERNAME = import.meta.env.VITE_USERNAME;
 const PASS = import.meta.env.VITE_PASS;
-const CROSSINGID = import.meta.env.VITE_CROSSINGID;
+export const CROSSINGID = import.meta.env.VITE_CROSSINGID;
 import { toast, Bounce } from "react-toastify";
 
 const trainclient = mqtt.connect(`ws://${MQTT_BROKER}:${PORT}`, {

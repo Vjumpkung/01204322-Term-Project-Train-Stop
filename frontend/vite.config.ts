@@ -1,4 +1,5 @@
 import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
 import { dependencies } from "./package.json";
 
 function renderChunks(deps: Record<string, string>) {
@@ -11,6 +12,10 @@ function renderChunks(deps: Record<string, string>) {
 }
 
 export default defineConfig({
+  plugins: [react()],
+  optimizeDeps: {
+    include: ["@emotion/styled"],
+  },
   build: {
     sourcemap: false,
     rollupOptions: {

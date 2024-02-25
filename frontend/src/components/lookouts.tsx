@@ -5,6 +5,7 @@ import Grid from "@mui/material/Grid";
 import { MqttClient } from "mqtt";
 import { useState } from "react";
 import { Box } from "@mui/material";
+import { CROSSINGID } from "../utils/connect_mqtt";
 
 export default function Lookouts({ client }: { client: MqttClient }) {
   const [westFar, setWestFar] = useState<boolean>(false);
@@ -13,16 +14,16 @@ export default function Lookouts({ client }: { client: MqttClient }) {
   const [eastNear, setEastNear] = useState<boolean>(false);
 
   client.on("message", function (topic, message) {
-    if (topic === "crossing1/lookouts/west/far") {
+    if (topic === `${CROSSINGID}/lookouts/west/far`) {
       setWestFar(message.toString() === "1");
     }
-    if (topic === "crossing1/lookouts/west/near") {
+    if (topic === `${CROSSINGID}/lookouts/west/near`) {
       setWestNear(message.toString() === "1");
     }
-    if (topic === "crossing1/lookouts/east/far") {
+    if (topic === `${CROSSINGID}/lookouts/east/far`) {
       setEastFar(message.toString() === "1");
     }
-    if (topic === "crossing1/lookouts/east/near") {
+    if (topic === `${CROSSINGID}/lookouts/east/near`) {
       setEastNear(message.toString() === "1");
     }
   });
@@ -37,7 +38,7 @@ export default function Lookouts({ client }: { client: MqttClient }) {
         </Box>
       </Grid>
       <Grid item xs={12} sm={6} md={3}>
-        <Card>
+        <Card sx={{ backgroundColor: westFar ? "green" : null }}>
           <CardContent>
             <Typography sx={{ fontSize: 30 }} color="text.primary" gutterBottom>
               West Far
@@ -52,7 +53,7 @@ export default function Lookouts({ client }: { client: MqttClient }) {
         </Card>
       </Grid>
       <Grid item xs={12} sm={6} md={3}>
-        <Card>
+        <Card sx={{ backgroundColor: westNear ? "green" : null }}>
           <CardContent>
             <Typography sx={{ fontSize: 30 }} color="text.primary" gutterBottom>
               West Near
@@ -67,7 +68,7 @@ export default function Lookouts({ client }: { client: MqttClient }) {
         </Card>
       </Grid>
       <Grid item xs={12} sm={6} md={3}>
-        <Card>
+        <Card sx={{ backgroundColor: eastFar ? "green" : null }}>
           <CardContent>
             <Typography sx={{ fontSize: 30 }} color="text.primary" gutterBottom>
               East Far
@@ -82,7 +83,7 @@ export default function Lookouts({ client }: { client: MqttClient }) {
         </Card>
       </Grid>
       <Grid item xs={12} sm={6} md={3}>
-        <Card>
+        <Card sx={{ backgroundColor: eastNear ? "green" : null }}>
           <CardContent>
             <Typography sx={{ fontSize: 30 }} color="text.primary" gutterBottom>
               East Near
