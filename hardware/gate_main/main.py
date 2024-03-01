@@ -2,10 +2,10 @@ from machine import Pin, reset
 import mqtt_setup as mqtt
 from time import time, sleep
 from servo import Servo
-from load_config import CROSSINGID
+from load_config import CROSSING_ID
 
 GATE_DIRECTION = "north"
-GATES_TOPIC = f"{CROSSINGID}/gates/{GATE_DIRECTION}"
+GATES_TOPIC = f"{CROSSING_ID}/gates/{GATE_DIRECTION}"
 GATE_OPEN_COMMAND = "1"
 GATE_CLOSE_COMMAND = "0"
 GATE_OPEN_STATUS = 90
