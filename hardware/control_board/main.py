@@ -219,7 +219,7 @@ def main():
         mode_topic=MODE_TOPIC,
     )
 
-    button = Button(23, control)
+    mode_togle_button = Button(23, control.toggle_mode)
 
     # do not subscribe to any topics until all the global variables needed by operations in sub_cb are set,
     # otherwise operations on these global variables will raise a nonetype error when a msg is received
@@ -239,7 +239,7 @@ def main():
     print("main: begin listening for msg...")
     last_ping = time.time()
     while True:
-        button.read_toggle_mode()
+        mode_togle_button.read_toggle()
         mqtt_client.check_msg()
         if time.time() - last_ping > 60:
             # ping the broker every 60 seconds to keep the connection alive
