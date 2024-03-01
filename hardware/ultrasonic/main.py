@@ -17,7 +17,7 @@ def main():
     while True:
         print(f"fetch {i}")
         ultra.read_and_publish()
-        time.sleep(0.25)
+        time.sleep(0.01)
         i += 1
         
 
@@ -28,3 +28,5 @@ if __name__ == "__main__":
     except Exception as e:
         print("Exception: " + str(e))
         reset()
+
+
