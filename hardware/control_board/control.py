@@ -61,6 +61,12 @@ class Control:
         self.mode = "M"
         self._publish_mode()
         print(f"Control.use_manual_mode: published and set mode to {self._mode}")
+    
+    def toggle_mode(self):
+        if self._mode == "A":
+            self.use_manual_mode()
+        else:
+            self.use_auto_mode()
 
     def transition(self, _input):
         _input = str(_input)
