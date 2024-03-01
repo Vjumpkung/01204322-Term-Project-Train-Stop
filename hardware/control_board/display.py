@@ -13,7 +13,9 @@ class Display:
 
     def update(self):
         self._oled.fill(0)
-        self._oled.text("Mode: " + self._control.mode, 0, 0)
+        self._oled.text(
+            "Mode: " + ("Auto" if self._control.mode == "A" else "Manual"), 0, 0
+        )
         self._oled.text("", 0, 10)
         self._oled.text("Gates", 0, 20)
         self._oled.text(
