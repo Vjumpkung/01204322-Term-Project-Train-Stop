@@ -4,7 +4,7 @@
 
 ## Lookouts
 
-continual report (period of 250 ms or less)
+spontaneous report
 
 - publishers
   - sensor boards (process values from sensors and publish continually)
