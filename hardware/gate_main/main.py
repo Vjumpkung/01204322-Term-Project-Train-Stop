@@ -1,7 +1,6 @@
-import machine
-from machine import Pin
+from machine import Pin, reset
 import mqtt_setup as mqtt
-from time import sleep
+from time import time, sleep
 from servo import Servo
 from load_config import CROSSINGID
 
@@ -14,9 +13,9 @@ GATE_CLOSE_STATUS = 0
 
 BUZZER_GPIO_PIN = 21
 SERVO_GPIO_PIN = 22
-gate_status = -1 # 
 
-count = -1 # count number of command got
+gate_status = -1 # init
+count = 0 # count number of command got
 
 
 
@@ -32,14 +31,19 @@ motor.update_settings(
 
 
 buzzer = Pin( BUZZER_GPIO_PIN, Pin.OUT )
-
-def func(topic, msg):
+def angle_to_status(angle: int):
+    if angle == GATE_OPEN_STATUS:
+        return "Open"
+    elif angle == GATE_CLOSE_STATUS:
+        return "Close"
+    return "wrong =ω="
+def callback_func(topic, msg):
     global gate_status,count
     msg2 = msg.decode()
     
     count +=1
-    if count == 0: ## i don't know bug fix
-        print(f" first {topic.decode()} command: {msg2}, angle:{gate_status}")
+    if count == 1: ## i don't know bug fix
+        print(f" first not count {topic.decode()} command: {msg2}, angle:{gate_status} {angle_to_status(gate_status)}")
         return
     
     if topic.decode() == GATES_TOPIC:
@@ -54,34 +58,31 @@ def func(topic, msg):
     else:
         print("wrong topic you fool")
         
-    print(f"{topic.decode()} command: {msg2}, angle:{gate_status}")
-
-
-
-def move_servo_test():
-    while 1:
-        for i in range(91):
-            motor.move(i)
-            sleep(0.01)
-        for i in range(90, 0, -1):
-            motor.move(i)
-            sleep(0.01)
+    print(f"{count}# {topic.decode()} command: {msg2}, angle:{gate_status} {angle_to_status(gate_status)}")
 
 
 def main():
-    client = mqtt.setup()
-    client.set_callback(func)
-    client.subscribe(GATES_TOPIC)
+    mqtt_client = mqtt.setup()
+    mqtt_client.set_callback(callback_func)
+    mqtt_client.subscribe(GATES_TOPIC)
     global gate_status
     # client.publish(GATES_TOPIC.encode(), GATE_OPEN_COMMAND.encode(), retain=True)
-    while(1):
+    last_ping = time()
+    while (True):
         # print("running")
-        client.check_msg()
-        if gate_status == GATE_CLOSE_STATUS: # gate close , sound the buzzer
+        
+        mqtt_client.check_msg()
+        
+        if gate_status == GATE_CLOSE_STATUS: # if gate close , sound the buzzer
             buzzer.value(not buzzer.value())
-        elif buzzer.value() != 0: # 
+        elif buzzer.value() != 0: # something else stop the buzzer
             buzzer.value(0)
-            
+        
+        if time() - last_ping > 60:
+            # ping the broker every 60 seconds to keep the connection alive
+            mqtt_client.ping()
+            last_ping = time()
+        
         sleep(0.5)
         
     
@@ -95,6 +96,6 @@ if __name__ == "__main__":
         main()
     except OSError as e:
         print("Error: " + str(e))
-        machine.reset()
+        reset()
 
 
