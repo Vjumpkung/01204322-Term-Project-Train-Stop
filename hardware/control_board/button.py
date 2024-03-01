@@ -20,7 +20,7 @@ class Button:
             self._steady_count = 0
             self._last_reading = reading
             return
-        if self._steady_count == 5:
+        if self._steady_count == 3:
             self._steady_count = 0
             self._last_state = self._current_state
             self._current_state = reading
