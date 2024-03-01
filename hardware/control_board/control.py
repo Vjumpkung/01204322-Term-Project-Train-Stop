@@ -58,7 +58,7 @@ class Control:
         else:
             self._mode = "A"
         self._publish_mode()
-        print(f"Control.toggle_mode: published and set mode to {self._mode}")
+        print(f"Control.toggle_mode: set mode to {self._mode}")
 
     def transition(self, _input):
         _input = str(_input)
@@ -75,15 +75,8 @@ class Control:
         print(f"Control.transition: changed state to {self._current_state}")
         self._publish_state()
 
-        if self._current_state not in self._state_actions:
-            print("Control.transition: no actions for this state")
+        if self._mode == "M":
             return
 
-        for action in self._state_actions[self._current_state]:
-            respect_mode = action[0]
-            if respect_mode and self._mode == "M":
-                continue
-            func = action[1]
-            kwargs = action[2]
-            print(f"Control.transition: calling state action {func.__name__}")
-            func(**kwargs)
+        if self._current_state in self._state_actions:
+            self._state_actions[self._current_state]()

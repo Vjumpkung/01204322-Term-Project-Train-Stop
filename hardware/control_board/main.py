@@ -46,7 +46,6 @@ def sub_cb(topic, msg):
 
 
 def sub_lookout_west_far_cb(msg):
-
     msg = int(msg)
     if msg not in [0, 1]:
         print("sub_lookout_west_far_cb: invalid received west_far lookout status")
@@ -147,7 +146,7 @@ def display_thread():
     display = Display(control, gates)
     while True:
         display.update()
-        time.sleep(0.01)
+        time.sleep(0.05)
 
 
 def main():
@@ -168,15 +167,12 @@ def main():
     gates = Gates(mqtt_client, cfg_topics.GATES_NORTH, cfg_topics.GATES_SOUTH)
 
     state_actions = {
-        # "state": [(<respect_mode>, <function>, <kwargs>), ...]
-        # if <respect_mode> is True, then the function will only be called if the mode is "A" (automatic)
-        # if <respect_mode> is False, then the function will be called regardless of the mode
-        "wb0": [(True, gates.close_all, {})],
-        "eb0": [(True, gates.close_all, {})],
-        "wb2": [(True, gates.open_all, {})],
-        "wb5": [(True, gates.open_all, {})],
-        "eb2": [(True, gates.open_all, {})],
-        "eb5": [(True, gates.open_all, {})],
+        "wb0": gates.close_all,
+        "eb0": gates.close_all,
+        "wb2": gates.open_all,
+        "wb5": gates.open_all,
+        "eb2": gates.open_all,
+        "eb5": gates.open_all,
     }
 
     control = Control(
@@ -190,6 +186,9 @@ def main():
         mode_topic=cfg_topics.MODE,
     )
 
+    _thread.start_new_thread(button_thread, ())
+    _thread.start_new_thread(display_thread, ())
+
     # do not subscribe to any topics until all the global variables needed by operations in sub_cb are set,
     # otherwise operations on these global variables will raise a nonetype error when a msg is received
 
@@ -202,9 +201,6 @@ def main():
     mqtt_client.subscribe(cfg_topics.GATES_NORTH)
     mqtt_client.subscribe(cfg_topics.GATES_SOUTH)
     mqtt_client.subscribe(cfg_topics.MODE)
-
-    _thread.start_new_thread(display_thread, ())
-    _thread.start_new_thread(button_thread, ())
 
     print("main: begin listening for msg...")
     last_ping = time.time()
