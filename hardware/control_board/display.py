@@ -16,12 +16,12 @@ class Display:
         self._oled.text(
             "Mode: " + ("Auto" if self._control.mode == "A" else "Manual"), 0, 0
         )
-        self._oled.text("", 0, 10)
-        self._oled.text("Gates", 0, 20)
+        self._oled.text("State: " + self._control.current_state, 0, 15)
+        self._oled.text("Gates", 0, 30)
         self._oled.text(
-            "North: " + ("Open" if self._gates.north == 1 else "Closed"), 0, 30
+            "North: " + ("Open" if self._gates.north == 1 else "Closed"), 0, 40
         )
         self._oled.text(
-            "South: " + ("Open" if self._gates.south == 1 else "Closed"), 0, 40
+            "South: " + ("Open" if self._gates.south == 1 else "Closed"), 0, 50
         )
         self._oled.show()

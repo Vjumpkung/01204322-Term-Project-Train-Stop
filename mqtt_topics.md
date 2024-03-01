@@ -1,13 +1,13 @@
 # MQTT Topics
 
-**enable retain message for all topics**
+**ENABLE RETAIN MESSAGE FOR ALL TOPICS!!**
 
 ## Lookouts
 
 spontaneous report
 
 - publishers
-  - sensor boards (process values from sensors and publish continually)
+  - sensor boards (process value from sensor and publish on change)
 - subscribers
   - control board (subscribe and save locally for control logic)
   - web ui (subscribe and save locally for display)
@@ -29,7 +29,7 @@ spontaneous report
 spontaneous report
 
 - publishers
-  - control board (save locally for control logic and publish on change)
+  - control board (save locally for control logic, display, and publish on change)
 - subscribers
   - web ui (subscribe and save locally for display)
 
@@ -70,8 +70,8 @@ spontaneous command
 spontaneous command
 
 - publishers
-  - control board (save locally for control logic, display and publish on manual mode change command)
-  - web ui (save locally for manual gate control, display and publish on manual mode change command)
+  - control board (save locally for control logic, display, and publish on manual mode change command)
+  - web ui (save locally for manual gate control, display, and publish on manual mode change command)
 - subscribers
   - control board (subscribe and save locally for control logic and display)
   - web ui (subscribe and save locally for manual gate control and display)
