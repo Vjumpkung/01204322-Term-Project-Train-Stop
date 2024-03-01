@@ -52,21 +52,13 @@ class Control:
         )
         print(f"Control._publish_mode: published mode {self._mode}")
 
-    def use_auto_mode(self):
-        self.mode = "A"
-        self._publish_mode()
-        print(f"Control.use_auto_mode: published and set mode to {self._mode}")
-
-    def use_manual_mode(self):
-        self.mode = "M"
-        self._publish_mode()
-        print(f"Control.use_manual_mode: published and set mode to {self._mode}")
-    
     def toggle_mode(self):
         if self._mode == "A":
-            self.use_manual_mode()
+            self._mode = "M"
         else:
-            self.use_auto_mode()
+            self._mode = "A"
+        self._publish_mode()
+        print(f"Control.toggle_mode: published and set mode to {self._mode}")
 
     def transition(self, _input):
         _input = str(_input)
