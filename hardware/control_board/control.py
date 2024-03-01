@@ -76,7 +76,12 @@ class Control:
         self._publish_state()
 
         if self._mode == "M":
+            print(
+                "Control.transition: mode is manual, no state action will be executed"
+            )
             return
 
         if self._current_state in self._state_actions:
-            self._state_actions[self._current_state]()
+            f = self._state_actions[self._current_state]
+            print(f"Control.transition: executing state action {f.__name__}")
+            f()

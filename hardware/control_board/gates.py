@@ -49,22 +49,22 @@ class Gates:
     def _open_north(self):
         self._north = 1
         self._publish_north()
-        print(f"Gates._open_north: published and set status to {self._north}")
+        print(f"Gates._open_north: set status to {self._north}")
 
     def _close_north(self):
         self._north = 0
         self._publish_north()
-        print(f"Gates._close_north: published and set status to {self._north}")
+        print(f"Gates._close_north: set status to {self._north}")
 
     def _open_south(self):
         self._south = 1
         self._publish_south()
-        print(f"Gates._open_south: published and set status to {self._south}")
+        print(f"Gates._open_south: set status to {self._south}")
 
     def _close_south(self):
         self._south = 0
         self._publish_south()
-        print(f"Gates._close_south: published and set status to {self._south}")
+        print(f"Gates._close_south: set status to {self._south}")
 
     def open_all(self):
         self._open_north()
