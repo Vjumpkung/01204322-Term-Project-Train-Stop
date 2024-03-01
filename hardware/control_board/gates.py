@@ -46,30 +46,42 @@ class Gates:
         )
         print(f"Gates._publish_south: published status {self._south}")
 
-    def open_north(self):
+    def _open_north(self):
         self._north = 1
         self._publish_north()
-        print(f"Gates.open_north: published and set status to {self._north}")
+        print(f"Gates._open_north: published and set status to {self._north}")
 
-    def close_north(self):
+    def _close_north(self):
         self._north = 0
         self._publish_north()
-        print(f"Gates.close_north: published and set status to {self._north}")
+        print(f"Gates._close_north: published and set status to {self._north}")
 
-    def open_south(self):
+    def _open_south(self):
         self._south = 1
         self._publish_south()
-        print(f"Gates.open_south: published and set status to {self._south}")
+        print(f"Gates._open_south: published and set status to {self._south}")
 
-    def close_south(self):
+    def _close_south(self):
         self._south = 0
         self._publish_south()
-        print(f"Gates.close_south: published and set status to {self._south}")
+        print(f"Gates._close_south: published and set status to {self._south}")
 
     def open_all(self):
-        self.open_north()
-        self.open_south()
+        self._open_north()
+        self._open_south()
 
     def close_all(self):
-        self.close_north()
-        self.close_south()
+        self._close_north()
+        self._close_south()
+
+    def toggle_north(self):
+        if self._north == 1:
+            self._close_north()
+        else:
+            self._open_north()
+
+    def toggle_south(self):
+        if self._south == 1:
+            self._close_south()
+        else:
+            self._open_south()

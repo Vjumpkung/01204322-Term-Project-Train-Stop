@@ -1,4 +1,5 @@
 import time
+import _thread
 
 from machine import reset
 from mqtt_setup import setup
@@ -118,7 +119,7 @@ def sub_cb(topic, msg):
             print("sub_cb: no change in received west_far lookout status")
             return
         lookouts.west_far = msg
-        control.transition(str(lookouts))
+        _thread.start_new_thread(control.transition, (str(lookouts),))
     elif topic == LOOKOUT_WEST_NEAR_TOPIC:
         msg = int(msg)
         if msg not in [0, 1]:
@@ -128,7 +129,7 @@ def sub_cb(topic, msg):
             print("sub_cb: no change in received west_near lookout status")
             return
         lookouts.west_near = msg
-        control.transition(str(lookouts))
+        _thread.start_new_thread(control.transition, (str(lookouts),))
     elif topic == LOOKOUT_EAST_NEAR_TOPIC:
         msg = int(msg)
         if msg not in [0, 1]:
@@ -138,7 +139,7 @@ def sub_cb(topic, msg):
             print("sub_cb: no change in received east_near lookout status")
             return
         lookouts.east_near = msg
-        control.transition(str(lookouts))
+        _thread.start_new_thread(control.transition, (str(lookouts),))
     elif topic == LOOKOUT_EAST_FAR_TOPIC:
         msg = int(msg)
         if msg not in [0, 1]:
@@ -148,7 +149,7 @@ def sub_cb(topic, msg):
             print("sub_cb: no change in received east_far lookout status")
             return
         lookouts.east_far = msg
-        control.transition(str(lookouts))
+        _thread.start_new_thread(control.transition, (str(lookouts),))
     elif topic == MODE_TOPIC:
         if msg not in ["A", "M"]:
             print("sub_cb: invalid mode")
@@ -220,6 +221,8 @@ def main():
     )
 
     mode_togle_button = Button(23, control.toggle_mode)
+    gate_north_toggle_button = Button(17, gates.toggle_north)
+    gate_south_toggle_button = Button(16, gates.toggle_south)
 
     # do not subscribe to any topics until all the global variables needed by operations in sub_cb are set,
     # otherwise operations on these global variables will raise a nonetype error when a msg is received
@@ -240,11 +243,18 @@ def main():
     last_ping = time.time()
     while True:
         mode_togle_button.read_toggle()
+
+        if control.mode == "M":
+            gate_north_toggle_button.read_toggle()
+            gate_south_toggle_button.read_toggle()
+
         mqtt_client.check_msg()
+
         if time.time() - last_ping > 60:
             # ping the broker every 60 seconds to keep the connection alive
             mqtt_client.ping()
             last_ping = time.time()
+
         time.sleep(0.01)
 
 
