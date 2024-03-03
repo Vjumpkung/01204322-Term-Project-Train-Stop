@@ -68,21 +68,6 @@ export default function Lookouts({ client }: { client: MqttClient }) {
         </Card>
       </Grid>
       <Grid item xs={12} sm={6} md={3}>
-        <Card sx={{ backgroundColor: eastFar ? "green" : null }}>
-          <CardContent>
-            <Typography sx={{ fontSize: 30 }} color="text.primary" gutterBottom>
-              East Far
-            </Typography>
-            <Typography sx={{ mb: 1.5 }} color="text.secondary">
-              status
-            </Typography>
-            <Typography sx={{ fontSize: "1.5em" }}>
-              {eastFar ? "detected" : "not detected"}
-            </Typography>
-          </CardContent>
-        </Card>
-      </Grid>
-      <Grid item xs={12} sm={6} md={3}>
         <Card sx={{ backgroundColor: eastNear ? "green" : null }}>
           <CardContent>
             <Typography sx={{ fontSize: 30 }} color="text.primary" gutterBottom>
@@ -93,6 +78,21 @@ export default function Lookouts({ client }: { client: MqttClient }) {
             </Typography>
             <Typography sx={{ fontSize: "1.5em" }}>
               {eastNear ? "detected" : "not detected"}
+            </Typography>
+          </CardContent>
+        </Card>
+      </Grid>
+      <Grid item xs={12} sm={6} md={3}>
+        <Card sx={{ backgroundColor: eastFar ? "green" : null }}>
+          <CardContent>
+            <Typography sx={{ fontSize: 30 }} color="text.primary" gutterBottom>
+              East Far
+            </Typography>
+            <Typography sx={{ mb: 1.5 }} color="text.secondary">
+              status
+            </Typography>
+            <Typography sx={{ fontSize: "1.5em" }}>
+              {eastFar ? "detected" : "not detected"}
             </Typography>
           </CardContent>
         </Card>
