@@ -1,22 +1,27 @@
 from machine import Pin, reset
-import mqtt_setup as mqtt
 from time import time, sleep
+from mqtt_setup import setup
 from servo import Servo
-from load_config import CROSSING_ID
+
+
+CROSSING_ID = "crossing1"
 
 GATE_DIRECTION = "north"
-GATES_TOPIC = f"{CROSSING_ID}/gates/{GATE_DIRECTION}"
+
+GATE_TOPIC = f"{CROSSING_ID}/gates/{GATE_DIRECTION}"
+
 GATE_OPEN_COMMAND = "1"
 GATE_CLOSE_COMMAND = "0"
+
 GATE_OPEN_STATUS = 90
 GATE_CLOSE_STATUS = 0
 
 BUZZER_GPIO_PIN = 21
 SERVO_GPIO_PIN = 22
 
+
 gate_status = -1  # init
 count = 0  # count number of command got
-
 
 motor = Servo(pin=SERVO_GPIO_PIN)
 motor.update_settings(
@@ -27,7 +32,6 @@ motor.update_settings(
     max_angle=180,
     pin=SERVO_GPIO_PIN,
 )
-
 
 buzzer = Pin(BUZZER_GPIO_PIN, Pin.OUT)
 
@@ -51,7 +55,7 @@ def callback_func(topic, msg):
         )
         return
 
-    if topic.decode() == GATES_TOPIC:
+    if topic.decode() == GATE_TOPIC:
         if msg2 == GATE_OPEN_COMMAND:
             gate_status = GATE_OPEN_STATUS
         elif msg2 == GATE_CLOSE_COMMAND:
@@ -69,9 +73,9 @@ def callback_func(topic, msg):
 
 
 def main():
-    mqtt_client = mqtt.setup()
+    mqtt_client = setup()
     mqtt_client.set_callback(callback_func)
-    mqtt_client.subscribe(GATES_TOPIC)
+    mqtt_client.subscribe(GATE_TOPIC)
     global gate_status
     # client.publish(GATES_TOPIC.encode(), GATE_OPEN_COMMAND.encode(), retain=True)
     last_ping = time()
