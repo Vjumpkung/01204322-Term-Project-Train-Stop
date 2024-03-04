@@ -21,7 +21,7 @@ BUZZER_GPIO_PIN = 21
 SERVO_GPIO_PIN = 22
 
 
-gate_status = -1  # init
+gate_status = GATE_OPEN_STATUS  # init
 count = 0  # count number of command got
 
 motor = Servo(pin=SERVO_GPIO_PIN)
@@ -60,12 +60,12 @@ def callback_func(topic, msg):
     global gate_status, count
     msg2 = msg.decode()
 
-    count += 1
-    if count == 1:  ## i don't know bug fix
-        print(
-            f" first not count {topic.decode()} command: {msg2}, angle:{gate_status} {angle_to_status(gate_status)}"
-        )
-        return
+    # count += 1
+    # if count == 1:  ## i don't know bug fix
+    #     print(
+    #         f" first not count {topic.decode()} command: {msg2}, angle:{gate_status} {angle_to_status(gate_status)}"
+    #     )
+    #     return
 
     if topic.decode() == GATE_TOPIC:
         if msg2 == GATE_OPEN_COMMAND:
