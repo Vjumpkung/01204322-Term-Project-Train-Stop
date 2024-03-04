@@ -36,7 +36,8 @@ export default function Mode({
               onChange={(event) => {
                 client.publish(
                   "crossing1/mode",
-                  event.target.checked ? "A" : "M"
+                  event.target.checked ? "A" : "M",
+                  { retain: true }
                 );
               }}
               size="medium"

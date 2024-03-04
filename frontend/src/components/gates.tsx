@@ -62,7 +62,8 @@ export default function Gates({
                   onChange={(event) => {
                     client.publish(
                       `${CROSSINGID}/gates/north`,
-                      event.target.checked ? "1" : "0"
+                      event.target.checked ? "1" : "0",
+                      { retain: true }
                     );
                   }}
                   size="medium"
@@ -98,7 +99,8 @@ export default function Gates({
                   onChange={(event) => {
                     client.publish(
                       `${CROSSINGID}/gates/south`,
-                      event.target.checked ? "1" : "0"
+                      event.target.checked ? "1" : "0",
+                      { retain: true }
                     );
                   }}
                   size="medium"
