@@ -1,5 +1,6 @@
 from machine import Pin, reset
 from time import time, sleep
+import _thread
 from mqtt_setup import setup
 from servo import Servo
 
@@ -33,8 +34,6 @@ motor.update_settings(
     pin=SERVO_GPIO_PIN,
 )
 
-buzzer = Pin(BUZZER_GPIO_PIN, Pin.OUT)
-
 
 def angle_to_status(angle: int):
     if angle == GATE_OPEN_STATUS:
@@ -42,6 +41,19 @@ def angle_to_status(angle: int):
     elif angle == GATE_CLOSE_STATUS:
         return "Close"
     return "wrong =ω="
+
+
+def buzzer_thread():
+    buzzer = Pin(BUZZER_GPIO_PIN, Pin.OUT)
+    while True:
+        if gate_status == GATE_CLOSE_STATUS:
+            buzzer.value(0)
+            sleep(0.01)
+            continue
+        buzzer.value(1)
+        sleep(0.5)
+        buzzer.value(0)
+        sleep(0.5)
 
 
 def callback_func(topic, msg):
@@ -73,21 +85,19 @@ def callback_func(topic, msg):
 
 
 def main():
+    global gate_status
+
     mqtt_client = setup()
     mqtt_client.set_callback(callback_func)
     mqtt_client.subscribe(GATE_TOPIC)
-    global gate_status
     # client.publish(GATES_TOPIC.encode(), GATE_OPEN_COMMAND.encode(), retain=True)
+
+    _thread.start_new_thread(buzzer_thread, ())
+
     last_ping = time()
     while True:
         # print("running")
-
         mqtt_client.check_msg()
-
-        if gate_status == GATE_CLOSE_STATUS:  # if gate close , sound the buzzer
-            buzzer.value(not buzzer.value())
-        elif buzzer.value() != 0:  # something else stop the buzzer
-            buzzer.value(0)
 
         if time() - last_ping > 60:
             # ping the broker every 60 seconds to keep the connection alive
