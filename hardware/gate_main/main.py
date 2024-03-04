@@ -94,7 +94,7 @@ def main():
             mqtt_client.ping()
             last_ping = time()
 
-        sleep(0.5)
+        sleep(0.01)
 
 
 if __name__ == "__main__":
