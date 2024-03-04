@@ -48,8 +48,4 @@ class Ultra:
                     print(f"Lookouts {self.lookout_topic}: published status {decision}")
 
             self.prev_dec = decision
-<<<<<<< HEAD
             self.count = 0
-=======
-            self.count = 0
->>>>>>> 709878602abed0a5d9fa6ecdf1da93725a8ae006
