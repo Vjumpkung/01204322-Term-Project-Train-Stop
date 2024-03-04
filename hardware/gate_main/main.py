@@ -3,6 +3,7 @@ from time import time, sleep
 import _thread
 from mqtt_setup import setup
 from servo import Servo
+from ultra import Ultra
 
 
 CROSSING_ID = "crossing1"
@@ -93,11 +94,18 @@ def main():
     # client.publish(GATES_TOPIC.encode(), GATE_OPEN_COMMAND.encode(), retain=True)
 
     _thread.start_new_thread(buzzer_thread, ())
+    
+    CROSSING_ID = "crossing1"
+    LOOKOUT_WEST_FAR_TOPIC = f"{CROSSING_ID}/lookouts/west/near"
+    
+    ultra = Ultra(mqtt_client, LOOKOUT_WEST_NEAR_TOPIC)
 
     last_ping = time()
     while True:
         # print("running")
         mqtt_client.check_msg()
+        
+        ultra.read_and_publish()
 
         if time() - last_ping > 60:
             # ping the broker every 60 seconds to keep the connection alive
