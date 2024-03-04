@@ -4,10 +4,10 @@ class Gates:
         self._mqtt_client = mqtt_client
         self._gates_north_topic = gates_north_topic
         self._gates_south_topic = gates_south_topic
+        self._debug = debug
         self._north = 1
         self._south = 1
         self.open_all()
-        self._debug = debug
 
     @property
     def north(self):

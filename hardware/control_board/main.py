@@ -185,9 +185,12 @@ def main():
         cfg_topics.LOOKOUT_WEST_NEAR,
         cfg_topics.LOOKOUT_EAST_NEAR,
         cfg_topics.LOOKOUT_EAST_FAR,
+        debug=False,
     )
 
-    gates = Gates(mqtt_client, cfg_topics.GATES_NORTH, cfg_topics.GATES_SOUTH)
+    gates = Gates(
+        mqtt_client, cfg_topics.GATES_NORTH, cfg_topics.GATES_SOUTH, debug=False
+    )
 
     state_actions = {
         "wb0": gates.close_all,
@@ -207,6 +210,7 @@ def main():
         mqtt_client=mqtt_client,
         state_topic=cfg_topics.STATE,
         mode_topic=cfg_topics.MODE,
+        debug=False,
     )
 
     _thread.start_new_thread(button_thread, ())

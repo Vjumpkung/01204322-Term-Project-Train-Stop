@@ -19,11 +19,11 @@ class Control:
         self._mqtt_client = mqtt_client
         self._state_topic = state_topic
         self._mode_topic = mode_topic
+        self._debug = debug
         self._current_state = initial_state
         self._mode = "A"
         self._publish_state()
         self._publish_mode()
-        self._debug = debug
 
     @property
     def current_state(self):

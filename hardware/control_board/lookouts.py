@@ -18,11 +18,11 @@ class Lookouts:
         self._west_near_topic = west_near_topic
         self._east_near_topic = east_near_topic
         self._east_far_topic = east_far_topic
+        self._debug = debug
         self._publish_west_far()
         self._publish_west_near()
         self._publish_east_near()
         self._publish_east_far()
-        self._debug = debug
 
     @property
     def west_far(self):
