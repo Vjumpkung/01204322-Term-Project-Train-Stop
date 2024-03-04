@@ -46,7 +46,7 @@ def angle_to_status(angle: int):
 def buzzer_thread():
     buzzer = Pin(BUZZER_GPIO_PIN, Pin.OUT)
     while True:
-        if gate_status == GATE_CLOSE_STATUS:
+        if gate_status == GATE_OPEN_STATUS:
             buzzer.value(0)
             sleep(0.01)
             continue
