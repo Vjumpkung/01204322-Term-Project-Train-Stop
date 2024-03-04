@@ -96,7 +96,7 @@ def main():
     _thread.start_new_thread(buzzer_thread, ())
     
     CROSSING_ID = "crossing1"
-    LOOKOUT_WEST_FAR_TOPIC = f"{CROSSING_ID}/lookouts/west/near"
+    LOOKOUT_WEST_NEAR_TOPIC = f"{CROSSING_ID}/lookouts/west/near"
     
     ultra = Ultra(mqtt_client, LOOKOUT_WEST_NEAR_TOPIC)
 
