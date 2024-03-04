@@ -4,7 +4,7 @@ from ultrasonic import get_ultra_distance
 class Ultra:
 
     def __init__(
-        self, mqtt_client, lookout_topic, threshold=3, count=0, memo=0, prev_dec=0
+        self, mqtt_client, lookout_topic, threshold=10, count=0, memo=0, prev_dec=0
     ):
         self.mqtt_client = mqtt_client
         self.lookout_topic = lookout_topic
