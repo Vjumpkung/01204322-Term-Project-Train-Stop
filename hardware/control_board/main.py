@@ -15,6 +15,9 @@ from button import Button
 from display import Display
 
 
+# turn on/off debug prints for global functions in this file
+debug = False
+
 # global variables used by operations in sub_cb
 lookouts = None
 gates = None
@@ -24,7 +27,8 @@ control = None
 def sub_cb(topic, msg):
     topic = topic.decode()
     msg = msg.decode()
-    print("sub_cb: received a msg: " + f"{topic}: {msg}")
+    if debug:
+        print("sub_cb: received a msg: " + f"{topic}: {msg}")
     # do not do anything that publishes back to the same topic
     # otherwise, this will cause an infinite loop of msg exchanges
     if topic == cfg_topics.LOOKOUT_WEST_FAR:
@@ -42,16 +46,21 @@ def sub_cb(topic, msg):
     elif topic == cfg_topics.MODE:
         sub_mode_cb(msg)
     else:
-        print("sub_cb: no actions for this topic")
+        if debug:
+            print("sub_cb: no actions for this topic")
 
 
 def sub_lookout_west_far_cb(msg):
     msg = int(msg)
     if msg not in [0, 1]:
-        print("sub_lookout_west_far_cb: invalid received west_far lookout status")
+        if debug:
+            print("sub_lookout_west_far_cb: invalid received west_far lookout status")
         return
     if lookouts.west_far == msg:
-        print("sub_lookout_west_far_cb: no change in received west_far lookout status")
+        if debug:
+            print(
+                "sub_lookout_west_far_cb: no change in received west_far lookout status"
+            )
         return
     lookouts.west_far = msg
     control.transition(str(lookouts))
@@ -60,12 +69,14 @@ def sub_lookout_west_far_cb(msg):
 def sub_lookout_west_near_cb(msg):
     msg = int(msg)
     if msg not in [0, 1]:
-        print("sub_lookout_west_near_cb: invalid received west_near lookout status")
+        if debug:
+            print("sub_lookout_west_near_cb: invalid received west_near lookout status")
         return
     if lookouts.west_near == msg:
-        print(
-            "sub_lookout_west_near_cb: no change in received west_near lookout status"
-        )
+        if debug:
+            print(
+                "sub_lookout_west_near_cb: no change in received west_near lookout status"
+            )
         return
     lookouts.west_near = msg
     control.transition(str(lookouts))
@@ -74,12 +85,14 @@ def sub_lookout_west_near_cb(msg):
 def sub_lookout_east_near_cb(msg):
     msg = int(msg)
     if msg not in [0, 1]:
-        print("sub_lookout_east_near_cb: invalid received east_near lookout status")
+        if debug:
+            print("sub_lookout_east_near_cb: invalid received east_near lookout status")
         return
     if lookouts.east_near == msg:
-        print(
-            "sub_lookout_east_near_cb: no change in received east_near lookout status"
-        )
+        if debug:
+            print(
+                "sub_lookout_east_near_cb: no change in received east_near lookout status"
+            )
         return
     lookouts.east_near = msg
     control.transition(str(lookouts))
@@ -88,10 +101,14 @@ def sub_lookout_east_near_cb(msg):
 def sub_lookout_east_far_cb(msg):
     msg = int(msg)
     if msg not in [0, 1]:
-        print("sub_lookout_east_far_cb: invalid received east_far lookout status")
+        if debug:
+            print("sub_lookout_east_far_cb: invalid received east_far lookout status")
         return
     if lookouts.east_far == msg:
-        print("sub_lookout_east_far_cb: no change in received east_far lookout status")
+        if debug:
+            print(
+                "sub_lookout_east_far_cb: no change in received east_far lookout status"
+            )
         return
     lookouts.east_far = msg
     control.transition(str(lookouts))
@@ -100,10 +117,12 @@ def sub_lookout_east_far_cb(msg):
 def sub_gate_north_cb(msg):
     msg = int(msg)
     if msg not in [0, 1]:
-        print("sub_gate_north_cb: invalid received north gate status")
+        if debug:
+            print("sub_gate_north_cb: invalid received north gate status")
         return
     if gates.north == msg:
-        print("sub_gate_north_cb: no change in received north gate status")
+        if debug:
+            print("sub_gate_north_cb: no change in received north gate status")
         return
     gates.north = msg
 
@@ -111,20 +130,24 @@ def sub_gate_north_cb(msg):
 def sub_gate_south_cb(msg):
     msg = int(msg)
     if msg not in [0, 1]:
-        print("sub_gate_south_cb: invalid received south gate status")
+        if debug:
+            print("sub_gate_south_cb: invalid received south gate status")
         return
     if gates.south == msg:
-        print("sub_gate_south_cb: no change in received south gate status")
+        if debug:
+            print("sub_gate_south_cb: no change in received south gate status")
         return
     gates.south = msg
 
 
 def sub_mode_cb(msg):
     if msg not in ["A", "M"]:
-        print("sub_mode_cb: invalid mode")
+        if debug:
+            print("sub_mode_cb: invalid mode")
         return
     if control.mode == msg:
-        print("sub_mode_cb: no change in mode")
+        if debug:
+            print("sub_mode_cb: no change in mode")
         return
     control.mode = msg
 

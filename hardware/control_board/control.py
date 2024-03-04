@@ -9,6 +9,7 @@ class Control:
         mqtt_client,
         state_topic,
         mode_topic,
+        debug=False,
     ):
         self._states = states
         self._inputs = inputs
@@ -22,6 +23,7 @@ class Control:
         self._mode = "A"
         self._publish_state()
         self._publish_mode()
+        self._debug = debug
 
     @property
     def current_state(self):
@@ -35,22 +37,26 @@ class Control:
     def mode(self, mode):
         mode = str(mode)
         if mode not in ["A", "M"]:
-            print("Control.mode.setter: invalid mode")
+            if self._debug:
+                print("Control.mode.setter: invalid mode")
             return
         self._mode = mode
-        print(f"Control.mode.setter: set mode to {self._mode}")
+        if self._debug:
+            print(f"Control.mode.setter: set mode to {self._mode}")
 
     def _publish_state(self):
         self._mqtt_client.publish(
             self._state_topic.encode(), self._current_state.encode(), retain=True
         )
-        print(f"Control._publish_state: published state {self._current_state}")
+        if self._debug:
+            print(f"Control._publish_state: published state {self._current_state}")
 
     def _publish_mode(self):
         self._mqtt_client.publish(
             self._mode_topic.encode(), self._mode.encode(), retain=True
         )
-        print(f"Control._publish_mode: published mode {self._mode}")
+        if self._debug:
+            print(f"Control._publish_mode: published mode {self._mode}")
 
     def toggle_mode(self):
         if self._mode == "A":
@@ -58,30 +64,36 @@ class Control:
         else:
             self._mode = "A"
         self._publish_mode()
-        print(f"Control.toggle_mode: set mode to {self._mode}")
+        if self._debug:
+            print(f"Control.toggle_mode: set mode to {self._mode}")
 
     def transition(self, _input):
         _input = str(_input)
 
         if _input not in self._inputs:
-            print("Control.transition: invalid input")
+            if self._debug:
+                print("Control.transition: invalid input")
             return
 
         if (self._current_state, _input) not in self._transitions:
-            print("Control.transition: no state change")
+            if self._debug:
+                print("Control.transition: no state change")
             return
 
         self._current_state = self._transitions[(self._current_state, _input)]
-        print(f"Control.transition: changed state to {self._current_state}")
+        if self._debug:
+            print(f"Control.transition: changed state to {self._current_state}")
         self._publish_state()
 
         if self._mode == "M":
-            print(
-                "Control.transition: mode is manual, no state action will be executed"
-            )
+            if self._debug:
+                print(
+                    "Control.transition: mode is manual, no state action will be executed"
+                )
             return
 
         if self._current_state in self._state_actions:
             f = self._state_actions[self._current_state]
-            print(f"Control.transition: executing state action {f.__name__}")
+            if self._debug:
+                print(f"Control.transition: executing state action {f.__name__}")
             f()
