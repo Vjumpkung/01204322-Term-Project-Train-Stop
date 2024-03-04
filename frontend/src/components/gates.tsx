@@ -61,7 +61,7 @@ export default function Gates({
                   checked={northGates}
                   onChange={(event) => {
                     client.publish(
-                      "crossing1/gates/north",
+                      `${CROSSINGID}/gates/north`,
                       event.target.checked ? "1" : "0"
                     );
                   }}
@@ -97,7 +97,7 @@ export default function Gates({
                   checked={southGates}
                   onChange={(event) => {
                     client.publish(
-                      "crossing1/gates/south",
+                      `${CROSSINGID}/gates/south`,
                       event.target.checked ? "1" : "0"
                     );
                   }}
