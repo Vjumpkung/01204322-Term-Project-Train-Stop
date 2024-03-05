@@ -1,89 +1,168 @@
 # งาน Project กลุ่ม หยุดก่อน รถไฟมาแล้ว
 
+## รายชื่อสมาชิกกลุ่ม
+
+- 6410504047 ชาญฤทธิ์ พิศิษฐ์จริง
+- 6410504110 ธิติ วิรัตกพันธ์
+- 6410504136 นราวิชญ์ สฤษฎีชัยกุล
+- 6410504195 พีรศุ พุทธกูล
+- 6410504250 รชต พีระนันทืรังษี
+
 ## คำอธิบาย Project
 
 เป็นการออกแบบระบบควบคุมการเปิดปิดของไม้กั้นรถไฟ ให้สอดคล้องกับระยะห่างของรถไฟที่กำลังมาถึงเเละรถที่กำลังวิ่งผ่านรางรถไฟ เพื่อให้รถจอดรอรถไฟด้วยระยะเวลาที่พอดีและไม่เกิดอุบัติเหตุ
 
-## วิธีใช้งาน
+## ที่มาและความสำคัญ
 
-- เปิด Thonny แล้วเปิด tab file explorer ตรงนี้
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ในยุคปัจจุบัน การเดินทางด้วยรถไฟนั้นเป็นที่นิยมและแพร่หลายไปยังทุกพื้นที่ทั่วโลก  ความนิยมในการเดินทางด้วยรถไฟนี้มาพร้อมกับรางรถไฟที่ถูกสร้างขึ้นมาในหลายพื้นที่ และรางรถไฟบางส่วนก็มีความจำเป็นที่จะต้องตัดผ่านถนน จึงทำให้มีการสร้างทางข้ามทางรถไฟขึ้นมา ซึ่งทางข้ามทางรถไฟก็มาพร้อมกับความเสี่ยงของอุบัติเหตุการชนกันของรถยนต์และรถไฟ
 
-![](images/image.png)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;มาตรการการลดความเสี่ยงของการเกิดอุบัติเหตุดังกล่าวก็คือการใช้ไม้กั้นทางรถไฟเมื่อรถไฟกำลังจะวิ่งผ่านทางข้ามทางรถไฟ แต่ในปัจจุบัน หลาย ๆ ทางข้ามทางรถไฟยังคงมนุษย์ในการควบคุมอยู่ หรือในพื้นที่ห่างไกลก็ไม่มีไม้กั้นหรือคนมาควบคุมเลย ด้วยเหตุนี้ ทางคณะผู้จัดทำโครงงานจึงเล็งเห็นถึงโอกาสในการพัฒนาระบบไม้กั้นทางรถไฟอัตโนมัติ เพื่อช่วยลดโอกาสการเกิดอุบัติเหตุ และช่วยแบ่งเบาภาระที่มนุษย์จะต้องควบคุมไม้กั้นทางข้ามทางรถไฟ
 
-- เปิด folder repo นี้ขึ้นมา
+<hr>
 
-![](images/img2.png)
+## ฟีเจอร์ที่สำคัญ 
 
-<small>*ค่อยๆ double click ไปเรื่อยๆ จนเปิด folder project ได้</small>
+- มีเซนเซอร์ Ultrasonic ที่สามารถตรวจสอบได้ว่า รถไฟมาจากทางไหน และ ยาวกี่ขบวน
+- ไม้กั้นที่สามารถเปิดปิดได้อัตโนมัติ หรือ ควบคุมเอง พร้อมกับเสียงเตือนจากลำโพง Buzzer
+- สามารถควบคุมไม้กั้นได้ผ่านหน้าเว็บไซต์ http://mqtt.embedded-train-stop.dynv6.net/ หรือ บน Control Board พร้อมหน้าจอ OLED เพื่อแสดงผลสถานะของไม้กั้นและ Mode ที่ใช้
+- มีโหมด Auto และ Manual สำหรับการควบคุมไม้กั้น
 
-- เลือกไฟล์ทั้งหมด (กด shift + file และ folder ทั้งหมด) -> กด `Upload to /`
+<hr>
 
+## แนวคิดและหลักการ
 
-![](images/image3.png)
+### บอร์ดที่ 1 Control Board
 
-- ไฟล์ก็จะถูก upload ลงบน esp32
+<img src="https://github.com/Vjumpkung/01204322-Term-Project-Train-Stop/blob/control-board/documents/schematics/control.png?raw=true" width=400> 
 
-![](images/mpy.png)
+- หน้าจอ OLED ที่แสดงผลสถานะของไม้กั้นและ Mode ที่ใช้
+- ควบคุมสถานะเริ่มต้นที่ใช้สำหรับการสื่อการกับบอร์ดที่เหลือ (Ultrasonic, Gate Servo) ผ่านปุ่ม 3 ปุ่ม
 
-- กดปุ่ม reboot บน board esp32
+<hr>
 
-## Project Structure (ส่วน Hardware)
+### บอร์ดที่ 2,3 Ultrasonic Board
 
-```
-main_hardware
-│   boot.py
-│   main.py
-│
-├─── config
-│       load_config.py
-│
-├─── mqtt
-│       mqtt_setup.py
-│
-├─── network
-│       wifi_connect.py
-│
-├─── sensors
-│       oled.py
-│       servo_test.py
-│       ultrasonic.py
-│
-└─── user_lib
-        hcsr04.py
-        servo.py
-        ssd1306.py
-```
-## คำอธิบาย Project Structure
+<img src="https://github.com/Vjumpkung/01204322-Term-Project-Train-Stop/blob/control-board/documents/schematics/ultrasonic.png?raw=true" width=400>
 
-- `boot.py` ทำงานเมื่อ esp32 เริ่มทำงาน โดยจะมีการทำงานดังนี้
-- `main.py` จะทำงานเมื่อหลัง `boot.py` ทำงานเสร็จสิ้น (แก้ไขได้)
-- `config.py` เป็นรวมการตั้งค่าต่างๆ 
-- `mqtt_setup.py` เป็นไฟล์ที่มี function setup mqtt ที่ใช้ต่อไปยัง MQTT Broker เรียบร้อยแล้ว
-- folder `sensors` เป็นรวมไฟล์ sensors ที่เชื่อมต่อเรียบร้อยแล้ว (เรียกตัวแปรมาพร้อมใช้งานเลย)
-- folder `user_lib` รวม library ต่างๆ ที่โหลดจากเน็ต
- 
+- มี Sensor Ultrasonic ที่ใช้วัดระยะโดยนำมาประยุกต์เมื่อมีรถไฟเข้ามาจะทำให้ระยะลดลง เมื่อต่ำกว่าระยะที่ได้กำหนด (น้อยกว่า 10 cm) จะทำการส่ง message ไปยัง topic `crossing1/lookouts`
+- โดย message ที่กำหนดมีดังนี้
+- `1` เมื่อระยะต่ำกว่าที่กำหนด (มีรถไฟผ่าน) , `0` เมื่อไม่มีรถไฟผ่าน
 
-## คำแนะนำในการใช้งาน
+<hr>
 
-- แนะนำให้อัพโหลด code ใน folder `main_hardware` ลงไปยัง board ก่อนแล้วค่อยแก้ไขไฟล์ต่างๆ
-- หากต้องการเรียก library sensors แต่ละตัว ให้ดูจาก folder `sensors_lib`
-- หากต้องการใช้ sensors ที่เชื่อมต่อ port และมี function ที่พร้อมใช้งาน ที่ต้องการแล้วให้ดูจาก folder `sensors`
+### บอร์ดที่ 4,5 Gate Servo Ultrasonic
 
-## ข้อควรระวัง
+<img src="https://github.com/Vjumpkung/01204322-Term-Project-Train-Stop/blob/control-board/documents/schematics/gate_servo_ultrasonic.png?raw=true" width=400>
 
-- อย่าแก้ไขไฟล์อะไรบน folder main_hardware นะ
-- หากต้องการเขียน code ในเครื่องตัวเอง ให้ copy ทั้ง folder main_hardware มาทั้งหมด ใส่ไปที่ Hardware และ เปลี่ยนชื่อ folder ด้วยนะ
-- ไฟล์ config อย่าแก้ไขค่าต่างๆในคอมตัวเอง แล้ว push ขึ้น github นะ (ระวังรหัส wifi หลุด)
-- อย่าตั้งชื่อ file ใน folder hardware ทีทำงานซ้ำกันนะ (ตอน `sys.path.append` มันจะทับกันเอง)
-    
-## การจัดการ repo นี้
+- มี Sensor Ultrasonic ที่ใช้วัดระยะโดยนำมาประยุกต์เมื่อมีรถไฟเข้ามาจะทำให้ระยะลดลง เมื่อต่ำกว่าระยะที่ได้กำหนด (น้อยกว่า 10 cm) จะทำการส่ง message ไปยัง topic crossing1/lookouts
+- โดย message ที่กำหนดมีดังนี้
+- `1` เมื่อระยะต่ำกว่าที่กำหนด (มีรถไฟผ่าน) , `0` เมื่อไม่มีรถไฟผ่าน
+- มี Servo ที่ใช้แทนไม้กั้นโดยจะรอรับข้อความจาก topic `crossing1/gates` โดยให้ `0` แทนไม้กั้นปิด `1` แทนไม้กั้นเปิด
+- มีลำโพง Buzzer ที่จะทำงานเมื่อไม้กั้นปิด `crossing1/gates = 0`
 
-- แยก branch ก่อนเสมอนะ !!!!!!!!!
-- ถ้าเขียน code ของแต่ละบอร์ดเสร็จแล้วก็ทำ folder ใน hardware แล้วช่วยระบุหน่อยว่า อันนี้คือ board ทำหน้าที่อะไร (แบบตั้งชื่อ folder ก็พอ) เช่น บอร์ดนี้อ่าน ultrasonic ตัวที่ 1 ให้เปิด folder แบบนี้ `/hardware/ultrasonic_board_1` และก็ export ออกมาจาก board ใส่เข้าไปยัง folder ที่สร้างเอาไว้
-- format code ไม่ต้องก็ได้เพราะว่า Thonny กาก...
-- pull request คิดว่าเรียบร้อยแล้ว (คนอื่นกด approve ได้นะ ไม่ใช่ vjump คนเดียว)
+<hr>
 
-## Known issues
+### Protocol ที่ใช้ในการสื่อสารระหว่าง Board
 
-- [x] ~~ไฟล์ `boot.py` เมื่อ upload ลงไปยัง esp32 แล้ว อาจจะไม่สามารถเปิดแก้ไขจากบอร์ด esp32 ได้ (ต้องแก้ไฟล์ในเครื่องแล้ว upload ทับลงไป)~~ (แก้ได้แล้ว ใช้ Thonny 4.1 ขึ้นไป)
-- [ ] เนื่องจาก micropython ไม่สามารถ import ผ่าน folder/directory ได้จึงต้องใช้ `sys.path.append` ในการเพิ่ม directory ต่างๆ เข้าไปแทน และการ import module ต่างๆ จึงเหมือนกับว่าทุกๆไฟล์อยู่ folder/directory เดียวกัน 
+- MQTT โดยผ่านการเปิด Broker เองโดยสามารถใช้งานได้ผ่าน `mqtt://mqtt.embedded-train-stop.dynv6.net` พร้อมกับ username + password เพื่อจำกัดการเข้าถึง และ ความปลอดภัย และ มี topic ที่ใช้ดังนี้
+
+# MQTT Topics
+
+**ENABLE RETAIN MESSAGE FOR ALL TOPICS!!**
+
+## Lookouts สำหรับบอร์ด Ultrasonic และ Gate Servo Ultrasonic
+
+spontaneous report
+
+- publishers
+  - sensor boards (process value from sensor and publish on change)
+- subscribers
+  - control board (subscribe and save locally for control logic)
+  - web ui (subscribe and save locally for display)
+
+### Topics
+
+- crossing1/lookouts/west/far
+- crossing1/lookouts/west/near
+- crossing1/lookouts/east/near
+- crossing1/lookouts/east/far
+
+### Values
+
+- "0" => not detected
+- "1" => detected
+
+## State สำหรับ Control Board
+
+spontaneous report
+
+- publishers
+  - control board (save locally for control logic, display, and publish on change)
+- subscribers
+  - web ui (subscribe and save locally for display)
+
+### Topics
+
+- crossing1/state
+
+### Values
+
+- "0", => no train
+- "eb0", "eb1", "eb2", "eb3", "eb4", "eb5", => train going east
+- "wb0", "wb1", "wb2", "wb3", "wb4", "wb5" => train going west
+
+## Gates สำหรับบอร์ด Gate Servo Ultrasonic
+
+spontaneous command
+
+- publishers
+  - control board (save locally for display and publish on auto/manual gate control command)
+  - web ui (save locally for display and publish on manual gate control command)
+- subscribers
+  - gate boards (subscribe and save locally for servo, buzzer, and LED control)
+  - control board (subscribe and save locally for display)
+  - web ui (subscribe and save locally for display)
+
+### Topics
+
+- crossing1/gates/north
+- crossing1/gates/south
+
+### Values
+
+- "0" => close
+- "1" => open
+
+## Mode สำหรับ Control Board
+
+spontaneous command
+
+- publishers
+  - control board (save locally for control logic, display, and publish on manual mode change command)
+  - web ui (save locally for manual gate control, display, and publish on manual mode change command)
+- subscribers
+  - control board (subscribe and save locally for control logic and display)
+  - web ui (subscribe and save locally for manual gate control and display)
+
+### Topics
+
+- crossing1/mode
+
+### Values
+
+- "A" => Auto
+- "M" => Manual
+
+<hr>
+
+- *เพิ่มเติม การ publish ข้อความจะมีการทำ retain เพื่อให้บอร์ดหรือเว็บไซต์ที่พึ่งทำการ subscribe topic ใหม่ได้เห็นข้อความล่าสุดเสมอ 
+- Websocket ใช้สำหรับการแสดงผลแบบ realtime ผ่านหน้าเว็บไซต์สามารถเชื่อมต่อได้ผ่าน `wss://mqtt.embedded-train-stop.dynv6.net` พร้อมกับ username + password
+  
+<hr>
+
+## Development Tools
+
+- ESP32 microcontroller สำหรับการทำ project
+- Thonny (ใช้สำหรับพัฒนา program สำหรับ board ESP32)
+- Visual Studio Code + Vite (สำหรับพัฒนาหน้าเว็บไซต์)
+- wokwi (สำหรับการวาดรูปแผนผังวงจรที่ใช้งานสำหรับการพัฒนา Project)
