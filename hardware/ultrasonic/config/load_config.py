@@ -1,6 +1,6 @@
-SSID = ""
-PASSWORD = ""
-MQTT_BROKER = "mqtt.embedded-train-stop.dynv6.net"
-PORT = 0000
-USERNAME = ""
-PASS = ""  # mqtt password
+SSID = "SSID"
+PASSWORD = "WIFI password"
+MQTT_BROKER = "MQTT Broker IP (or domain)"
+PORT = 1883
+USERNAME = "username"
+PASS = "password"  # mqtt password
