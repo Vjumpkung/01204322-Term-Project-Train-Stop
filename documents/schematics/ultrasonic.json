@@ -1,0 +1,43 @@
+{
+  "version": 1,
+  "author": "Anonymous maker",
+  "editor": "wokwi",
+  "parts": [
+    {
+      "type": "wokwi-breadboard-half",
+      "id": "bb2",
+      "top": -243,
+      "left": -237.2,
+      "attrs": {}
+    },
+    {
+      "type": "board-esp32-devkit-c-v4",
+      "id": "esp",
+      "top": -211.2,
+      "left": -350.36,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-hc-sr04",
+      "id": "ultrasonic1",
+      "top": -219.3,
+      "left": -32.9,
+      "attrs": {}
+    }
+  ],
+  "connections": [
+    ["esp:TX", "$serialMonitor:RX", "", []],
+    ["esp:RX", "$serialMonitor:TX", "", []],
+    ["bb2:tp.1", "esp:5V", "red", ["h-161.6", "v221.1"]],
+    ["bb2:tn.1", "esp:GND.2", "black", ["v-0.1", "h-46.4"]],
+    ["bb2:27b.g", "bb2:tp.15", "red", ["h-86.4", "v-115.5"]],
+    ["bb2:30b.h", "bb2:tn.14", "black", ["h-124.8", "v-115.1"]],
+    ["bb2:28b.i", "esp:19", "green", ["h-268.8", "v-19.2"]],
+    ["bb2:29b.j", "esp:18", "green", ["h-288", "v-19.2"]],
+    ["ultrasonic1:VCC", "bb2:27b.f", "", ["$bb"]],
+    ["ultrasonic1:TRIG", "bb2:28b.f", "", ["$bb"]],
+    ["ultrasonic1:ECHO", "bb2:29b.f", "", ["$bb"]],
+    ["ultrasonic1:GND", "bb2:30b.f", "", ["$bb"]]
+  ],
+  "dependencies": {}
+}
